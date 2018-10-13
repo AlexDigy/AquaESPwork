@@ -1,23 +1,21 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
-#include <ESP8266mDNS.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 
-const char* ssid = "........";
-const char* password = "........";
+const char* ssid = "digynet";
+const char* password = "Dnpm7Ssgk8";
 
 ESP8266WebServer server(80);
-
-const int led = 13;
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 
 void handleRoot() {
-  digitalWrite(led, 1);
   server.send(200, "text/plain", "hello from esp8266!");
-  digitalWrite(led, 0);
 }
 
 void handleNotFound(){
-  digitalWrite(led, 1);
   String message = "File Not Found\n\n";
   message += "URI: ";
   message += server.uri();
@@ -30,12 +28,9 @@ void handleNotFound(){
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
   server.send(404, "text/plain", message);
-  digitalWrite(led, 0);
 }
 
 void setup(void){
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
@@ -52,10 +47,6 @@ void setup(void){
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  if (MDNS.begin("esp8266")) {
-    Serial.println("MDNS responder started");
-  }
-
   server.on("/", handleRoot);
 
   server.on("/inline", [](){
@@ -66,8 +57,16 @@ void setup(void){
 
   server.begin();
   Serial.println("HTTP server started");
+
+  timeClient.begin();
 }
 
 void loop(void){
   server.handleClient();
+
+  timeClient.update();
+
+  Serial.println(timeClient.getFormattedTime());
+
+  delay(1000);
 }
