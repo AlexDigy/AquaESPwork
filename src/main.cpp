@@ -4,6 +4,7 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include "aquasensors.h"
+#include "myds18b20.h"
 
 const char *ssid = "digynet";
 const char *password = "Dnpm7Ssgk8";
@@ -17,6 +18,7 @@ void handleRoot()
   String mess = "hello from esp8266!\r\n";
   mess += timeClient.getFormattedTime();
   mess += "\r\n";
+  mess+=DallasSearch4web();
   server.send(200, "text/plain", mess);
 }
 
@@ -69,7 +71,8 @@ void setup(void)
 
   timeClient.begin();
 
-  SensorsSetup();
+DallasBegin();
+  //SensorsSetup();
 }
 
 void loop(void)
