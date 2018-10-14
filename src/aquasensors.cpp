@@ -1,4 +1,4 @@
-#include <aquasensors.h>
+#include "aquasensors.h"
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <Adafruit_Sensor.h>
@@ -143,11 +143,10 @@ void SensorsLoop()
     Serial.println("DONE");
     // print the device information
     printData(dsEpraAddr);
-    printData(dsAmbientAddr
-);
+    printData(dsAmbientAddr);
 
     // Delay between measurements.
-    delay(delayMS);
+    //delay(delayMS);
     // Get temperature event and print its value.
     sensors_event_t event;
     dht.temperature().getEvent(&event);

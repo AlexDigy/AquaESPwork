@@ -10,11 +10,14 @@ const char *password = "Dnpm7Ssgk8";
 
 ESP8266WebServer server(80);
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
+NTPClient timeClient(ntpUDP, "ru.pool.ntp.org", 5 * 3600, 6 * 60 * 60 * 1000);
 
 void handleRoot()
 {
-  server.send(200, "text/plain", "hello from esp8266!");
+  String mess = "hello from esp8266!\r\n";
+  mess += timeClient.getFormattedTime();
+  mess += "\r\n";
+  server.send(200, "text/plain", mess);
 }
 
 void handleNotFound()
@@ -75,9 +78,9 @@ void loop(void)
 
   timeClient.update();
 
-  Serial.println(timeClient.getFormattedTime());
+  //Serial.println(timeClient.getFormattedTime());
 
-  SensorsLoop();
+  //SensorsLoop();
 
   delay(1000);
 }
