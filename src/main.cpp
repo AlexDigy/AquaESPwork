@@ -17,8 +17,7 @@ void handleRoot()
 {
   String mess = "hello from esp8266!\r\n";
   mess += timeClient.getFormattedTime();
-  mess += "\r\n";
-  mess+=DallasSearch4web();
+
   server.send(200, "text/plain", mess);
 }
 
@@ -37,6 +36,12 @@ void handleNotFound()
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
   server.send(404, "text/plain", message);
+}
+
+void handleOneWire()
+{
+  String mess = DallasSearch4web();
+  server.send(200, "text/plain", mess);
 }
 
 void setup(void)
@@ -59,6 +64,7 @@ void setup(void)
   Serial.println(WiFi.localIP());
 
   server.on("/", handleRoot);
+  server.on("/onewire", handleOneWire);
 
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
@@ -71,19 +77,22 @@ void setup(void)
 
   timeClient.begin();
 
-DallasBegin();
+  DallasBegin();
   //SensorsSetup();
 }
 
 void loop(void)
 {
+  delay(1000);
+
+  if (WiFi.status() != WL_CONNECTED)
+    return;
+
   server.handleClient();
 
-  timeClient.update();
+  //timeClient.update();
 
   //Serial.println(timeClient.getFormattedTime());
 
   //SensorsLoop();
-
-  delay(1000);
 }
