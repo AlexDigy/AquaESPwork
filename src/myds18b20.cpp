@@ -8,7 +8,7 @@
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-DeviceAddress dsEpraAddr = {0x28, 0xff, 0xd8, 0x9b, 0x53, 0x14, 0x01, 0x4b};
+DeviceAddress dsEpraAddr = {0x28, 0xff, 0x2f, 0x6c, 0x53, 0x14, 0x01, 0x4b};
 DeviceAddress dsAmbientAddr = {0x28, 0xff, 0xd8, 0x9b, 0x53, 0x14, 0x01, 0x4b};
 DeviceAddress dsWaterAddr = {0x28, 0x6D, 0x7A, 0x6B, 0x05, 0x00, 0x00, 0x76};
 
@@ -19,6 +19,10 @@ float dsWaterTemp = -127;
 void DallasBegin()
 {
     sensors.begin();
+    // set the resolution to 9 bit per device
+    sensors.setResolution(dsEpraAddr, TEMPERATURE_PRECISION);
+    sensors.setResolution(dsAmbientAddr, TEMPERATURE_PRECISION);
+    sensors.setResolution(dsWaterAddr, TEMPERATURE_PRECISION);
 }
 
 String DallasSearch4web()
@@ -94,6 +98,7 @@ String printAddress(DeviceAddress deviceAddress)
 
 void CheckDallas()
 {
+    sensors.requestTemperatures();
     dsEpraTemp = sensors.getTempC(dsEpraAddr);
     dsAmbientTemp = sensors.getTempC(dsAmbientAddr);
     dsWaterTemp = sensors.getTempC(dsWaterAddr);
