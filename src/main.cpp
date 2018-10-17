@@ -3,8 +3,9 @@
 #include <ESP8266WebServer.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
-#include "aquasensors.h"
+#include "mydht.h"
 #include "myds18b20.h"
+#include "relays.h"
 
 const char *ssid = "digynet";
 const char *password = "Dnpm7Ssgk8";
@@ -44,9 +45,27 @@ void handleOneWire()
   server.send(200, "text/plain", mess);
 }
 
+void handleSensors()
+{
+  String mess = timeClient.getFormattedTime();
+  mess += "\r\nOneWire:\r\n";
+  mess += "Ambient: " + String(dsAmbientTemp, 1) + "\r\n";
+  mess += "Epra: " + String(dsEpraTemp, 1) + "\r\n";
+  mess += "Water: " + String(dsWaterTemp, 1) + "\r\n";
+
+  mess += "DHT:\r\n";
+  mess += "dht temp: " + String(dhtTemp, 1) + "\r\n";
+  mess += "dht humidity: " + String(dhtHumidity, 0) + "\r\n";
+
+  server.send(200, "text/plain", mess);
+}
+
 void setup(void)
 {
   Serial.begin(115200);
+
+  SetupRelays();
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
@@ -65,6 +84,7 @@ void setup(void)
 
   server.on("/", handleRoot);
   server.on("/onewire", handleOneWire);
+  server.on("/sensors", handleSensors);
 
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
@@ -78,7 +98,7 @@ void setup(void)
   timeClient.begin();
 
   DallasBegin();
-  //SensorsSetup();
+  DhtBegin();
 }
 
 void loop(void)
@@ -90,7 +110,11 @@ void loop(void)
 
   server.handleClient();
 
-  //timeClient.update();
+  timeClient.update();
+
+  CheckDallas();
+  CheckDht();
+  sample();
 
   //Serial.println(timeClient.getFormattedTime());
 

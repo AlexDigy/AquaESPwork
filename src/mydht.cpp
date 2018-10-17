@@ -1,17 +1,19 @@
-#include "aquasensors.h"
+#include "mydht.h"
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
 
-#define DHTPIN 5      // Pin which is connected to the DHT sensor.
+#define DHTPIN 4      // Pin which is connected to the DHT sensor.
 #define DHTTYPE DHT22 // DHT 22 (AM2302)
 DHT_Unified dht(DHTPIN, DHTTYPE);
-uint32_t delayMS;
 
-void SensorsSetup()
-{    
+float dhtTemp = -127;
+float dhtHumidity = -127;
+
+void DhtBegin()
+{
     dht.begin();
-    // Print temperature sensor details.
+    /*// Print temperature sensor details.
     sensor_t sensor;
     dht.temperature().getSensor(&sensor);
     Serial.println("------------------------------------");
@@ -53,10 +55,10 @@ void SensorsSetup()
     Serial.println("%");
     Serial.println("------------------------------------");
     // Set delay between sensor readings based on sensor details.
-    delayMS = sensor.min_delay / 1000;
+    delayMS = sensor.min_delay / 1000;*/
 }
 
-void SensorsLoop()
+void CheckDht()
 {
     // Delay between measurements.
     //delay(delayMS);
@@ -65,24 +67,28 @@ void SensorsLoop()
     dht.temperature().getEvent(&event);
     if (isnan(event.temperature))
     {
-        Serial.println("Error reading temperature!");
+        //Serial.println("Error reading temperature!");
+        dhtTemp = -127;
     }
     else
     {
-        Serial.print("Temperature: ");
-        Serial.print(event.temperature);
-        Serial.println(" *C");
+        //Serial.print("Temperature: ");
+        //Serial.print(event.temperature);
+        //Serial.println(" *C");
+        dhtTemp = event.temperature;
     }
     // Get humidity event and print its value.
     dht.humidity().getEvent(&event);
     if (isnan(event.relative_humidity))
     {
-        Serial.println("Error reading humidity!");
+        //Serial.println("Error reading humidity!");
+        dhtHumidity = -127;
     }
     else
     {
-        Serial.print("Humidity: ");
-        Serial.print(event.relative_humidity);
-        Serial.println("%");
+        //Serial.print("Humidity: ");
+        //Serial.print(event.relative_humidity);
+        //Serial.println("%");
+        dhtHumidity = event.relative_humidity;
     }
 }

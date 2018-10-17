@@ -8,9 +8,13 @@
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-DeviceAddress dsEpraAddr = {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0};
-DeviceAddress dsAmbientAddr = {0x28, 0xFF, 0x2F, 0x6C, 0x53, 0x14, 0x01, 0x4B};
+DeviceAddress dsEpraAddr = {0x28, 0xff, 0xd8, 0x9b, 0x53, 0x14, 0x01, 0x4b};
+DeviceAddress dsAmbientAddr = {0x28, 0xff, 0xd8, 0x9b, 0x53, 0x14, 0x01, 0x4b};
 DeviceAddress dsWaterAddr = {0x28, 0x6D, 0x7A, 0x6B, 0x05, 0x00, 0x00, 0x76};
+
+float dsEpraTemp = -127;
+float dsAmbientTemp = -127;
+float dsWaterTemp = -127;
 
 void DallasBegin()
 {
@@ -28,7 +32,7 @@ String DallasSearch4web()
         result += "Device " + String(i);
         result += ": ";
         DeviceAddress addr;
-        if (!sensors.getAddress(addr, 0))
+        if (!sensors.getAddress(addr, i))
         {
             result += "Unable to find address";
         }
@@ -45,7 +49,7 @@ String DallasSearch4web()
 void DallasSetup()
 {
     sensors.begin();
-    if (!sensors.getAddress(dsEpraAddr, 0))
+    /*if (!sensors.getAddress(dsEpraAddr, 0))
         Serial.println("Unable to find address for Device 0");
     if (!sensors.getAddress(dsAmbientAddr, 1))
         Serial.println("Unable to find address for Device 1");
@@ -55,17 +59,19 @@ void DallasSetup()
     Serial.println();
     Serial.print("Device 1 Address: ");
     printAddress(dsAmbientAddr);
-    Serial.println();
+    Serial.println();*/
+
     // set the resolution to 9 bit per device
     sensors.setResolution(dsEpraAddr, TEMPERATURE_PRECISION);
     sensors.setResolution(dsAmbientAddr, TEMPERATURE_PRECISION);
+    sensors.setResolution(dsWaterAddr, TEMPERATURE_PRECISION);
 
-    Serial.print("Device 0 Resolution: ");
+    /*Serial.print("Device 0 Resolution: ");
     Serial.print(sensors.getResolution(dsEpraAddr), DEC);
     Serial.println();
     Serial.print("Device 1 Resolution: ");
     Serial.print(sensors.getResolution(dsAmbientAddr), DEC);
-    Serial.println();
+    Serial.println();*/
 }
 
 // function to print a device address
@@ -84,6 +90,13 @@ String printAddress(DeviceAddress deviceAddress)
         result += String(deviceAddress[i], HEX);
     }
     return result;
+}
+
+void CheckDallas()
+{
+    dsEpraTemp = sensors.getTempC(dsEpraAddr);
+    dsAmbientTemp = sensors.getTempC(dsAmbientAddr);
+    dsWaterTemp = sensors.getTempC(dsWaterAddr);
 }
 
 // function to print the temperature for a device
