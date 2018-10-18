@@ -115,8 +115,4 @@ void loop(void)
   CheckDallas();
   CheckDht();
   sample();
-
-  //Serial.println(timeClient.getFormattedTime());
-
-  //SensorsLoop();
 }

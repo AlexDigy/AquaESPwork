@@ -10,6 +10,11 @@ void SetupRelays()
     pinMode(in2, OUTPUT);
     pinMode(in3, OUTPUT);
     pinMode(in4, OUTPUT);
+
+    SetOutput(1, true);
+    SetOutput(2, true);
+    SetOutput(3, true);
+    SetOutput(4, true);
 }
 
 void SetOutput(byte number, bool value)
