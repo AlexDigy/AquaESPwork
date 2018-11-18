@@ -3,10 +3,10 @@
 class AquaT
 {
   public:
-    int OnHour;
-    int OnMinute;
-    int OffHour;
-    int OffMinute;
+    unsigned int OnHour;
+    unsigned int OnMinute;
+    unsigned int OffHour;
+    unsigned int OffMinute;
 
     void Parse(String str);
     bool CheckLamp(unsigned long epochTime);

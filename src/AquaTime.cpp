@@ -33,7 +33,7 @@ class AquaTime
             return;
 
         // 08:30;17:00;09:30;17:30;10:30;16:00;11:30;16:30
-        if (str.length != 47)
+        if (str.length() != 47)
             return;
 
         lamp1.Parse(str.substring(0, 10));
@@ -43,40 +43,31 @@ class AquaTime
     }
 };
 
-class AquaT
+void AquaT::Parse(String str)
 {
-  public:
-    int OnHour;
-    int OnMinute;
-    int OffHour;
-    int OffMinute;
+    OnHour = str.substring(0, 1).toInt();
+    OnMinute = str.substring(3, 4).toInt();
 
-    void Parse(String str)
-    {
-        OnHour = str.substring(0, 1).toInt();
-        OnMinute = str.substring(3, 4).toInt();
+    OffHour = str.substring(6, 7).toInt();
+    OffMinute = str.substring(9, 10).toInt();
+}
+//08:30;17:00
+bool AquaT::CheckLamp(unsigned long epochTime)
+{
+    unsigned long hours = (epochTime % 86400L) / 3600;
+    unsigned long minutes = (epochTime % 3600) / 60;
 
-        OffHour = str.substring(6, 7).toInt();
-        OffMinute = str.substring(9, 10).toInt();
-    }
-    //08:30;17:00
-    bool CheckLamp(unsigned long epochTime)
-    {
-        unsigned long hours = (epochTime % 86400L) / 3600;
-        unsigned long minutes = (epochTime % 3600) / 60;
+    if (hours < OnHour)
+        return false;
 
-        if (hours < OnHour)
-            return false;
+    if (hours == OnHour && minutes < OnMinute)
+        return false;
 
-        if (hours == OnHour && minutes < OnMinute)
-            return false;
+    if (hours > OffHour)
+        return false;
 
-        if (hours > OffHour)
-            return false;
+    if (hours == OffHour && minutes >= OffMinute)
+        return false;
 
-        if (hours == OffHour && minutes >= OffMinute)
-            return false;
-
-        return true;
-    }
-};
+    return true;
+}
