@@ -99,8 +99,14 @@ void setup(void)
 
   DallasBegin();
   DhtBegin();
-}
 
+  pinMode(16, OUTPUT); // вентилятор
+  digitalWrite(16, LOW);
+  digitalWrite(12, LOW);
+  digitalWrite(13, LOW);
+  //digitalWrite(14, LOW);
+}
+bool fun=false;
 void loop(void)
 {
   delay(1000);
@@ -114,5 +120,10 @@ void loop(void)
 
   CheckDallas();
   CheckDht();
-  sample();
+  //sample();
+  if (fun)
+    digitalWrite(16, HIGH);
+  else
+    digitalWrite(16, LOW);
+  fun=!fun;
 }

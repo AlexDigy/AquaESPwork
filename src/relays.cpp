@@ -4,19 +4,19 @@
 int in1 = 13; // Указываем, что вывод реле In1, подключен к реле цифровому выводу
 int in2 = 12; // Указываем, что вывод реле In2, подключен к реле цифровому выводу
 int in3 = 14;
-int in4 = 16;
+//int in4 = 2; // был 16. Второй нельзя использовать, т.к. дергается постоянно логгером
 
 void SetupRelays()
 {
     pinMode(in1, OUTPUT); // Установим вывод как выход
     pinMode(in2, OUTPUT);
     pinMode(in3, OUTPUT);
-    pinMode(in4, OUTPUT);
+    //pinMode(in4, OUTPUT);
 
     SetOutput(1, true);
     SetOutput(2, true);
     SetOutput(3, true);
-    SetOutput(4, true);
+    //SetOutput(4, true);
 }
 
 void SetOutput(byte number, bool value)
@@ -33,9 +33,9 @@ void SetOutput(byte number, bool value)
     case 3:
         num = in3;
         break;
-    case 4:
+    /*case 4:
         num = in4;
-        break;
+        break;*/
     }
     if (value)
         digitalWrite(num, HIGH); // Включаем реле
@@ -50,7 +50,7 @@ void sample()
 {
     SetOutput(iter++, tekval);
 
-    if (iter > 4)
+    if (iter > 3)
     {
         iter = 1;
         tekval = !tekval;
