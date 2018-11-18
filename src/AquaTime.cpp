@@ -1,3 +1,4 @@
+#include "AquaTime.h"
 #include <Arduino.h>
 
 class AquaTime
