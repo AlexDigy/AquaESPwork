@@ -21,7 +21,7 @@ void SetupRelays()
 
 void SetOutput(byte number, bool value)
 {
-    int num = 1;
+    int num = 0;
     switch (number)
     {
     case 1:
@@ -33,10 +33,12 @@ void SetOutput(byte number, bool value)
     case 3:
         num = in3;
         break;
-    /*case 4:
+        /*case 4:
         num = in4;
         break;*/
     }
+    if (num < 1 && num > 3)
+        return;
     if (value)
         digitalWrite(num, HIGH); // Включаем реле
     else

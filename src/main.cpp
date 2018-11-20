@@ -7,6 +7,8 @@
 #include "myds18b20.h"
 #include "relays.h"
 
+#include "index.h" //Our HTML webpage contents with javascripts
+
 const char *ssid = "digynet";
 const char *password = "Dnpm7Ssgk8";
 
@@ -16,9 +18,9 @@ NTPClient timeClient(ntpUDP, "ru.pool.ntp.org", 5 * 3600, 6 * 60 * 60 * 1000);
 
 void handleRoot()
 {
-  String mess = "hello from esp8266!\r\n";
-  mess += timeClient.getFormattedTime();
-
+  //String mess = "hello from esp8266!\r\n";
+  //mess += timeClient.getFormattedTime();
+  String mess = MAIN_page; //Read HTML contents
   server.send(200, "text/plain", mess);
 }
 
@@ -60,6 +62,84 @@ void handleSensors()
   server.send(200, "text/plain", mess);
 }
 
+void handleADC()
+{
+  String adcValue = "<?xml version = \"1.0\" ?>";
+  adcValue += "<sensors>";
+
+  adcValue += "<BoardHumi>";
+  adcValue += String(dhtHumidity, 0);
+  adcValue += "</BoardHumi>";
+
+  adcValue += "<BoardTemp>";
+  adcValue += String(dhtTemp, 1);
+  adcValue += "</BoardTemp>";
+
+  adcValue += "<AmbientTemp>";
+  adcValue += String(dsAmbientTemp, 1);
+  adcValue += "</AmbientTemp>";
+
+  adcValue += "<EpraTemp>";
+  adcValue += String(dsEpraTemp, 1);
+  adcValue += "</EpraTemp>";
+
+  adcValue += "<WaterTemp>";
+  adcValue += String(dsWaterTemp, 1);
+  adcValue += "</WaterTemp>";
+
+  adcValue += "<BoardTime>";
+  adcValue += timeClient.getFormattedTime();
+  adcValue += "</BoardTime>";
+
+  adcValue += "</sensors>";
+  server.send(200, "text/xml", adcValue); //Send ADC value only to client ajax request
+}
+
+void handleLED()
+{
+  String ledState = "OFF";                 //Feedback parameter
+  String t_state = server.arg("LEDstate"); //Refer  xhttp.open("GET", "setLED?LED="+lamp+"&LEDstate="+led, true);
+  String t_lamp = server.arg("LED");       //Refer  xhttp.open("GET", "setLED?LED="+lamp+"&LEDstate="+led, true);
+  Serial.println(t_state);
+  if (t_state == NULL || t_lamp == NULL)
+  {
+    t_state = "";
+    t_lamp = "";
+  }
+  byte led = 0;
+  if (t_lamp = "1")
+    led = 1;
+  if (t_lamp = "2")
+    led = 2;
+  if (t_lamp = "3")
+    led = 3;
+  if (t_lamp = "5")
+    led = 5;
+  bool lampState = false;
+  if (t_state == "1")
+  {
+    lampState = true;
+    ledState = "ON";
+  }
+  else
+  {
+    lampState = false;
+    ledState = "OFF";
+  }
+
+  if (led == 5)
+  {
+    if (lampState)
+      digitalWrite(16, HIGH);
+    else
+      digitalWrite(16, LOW);
+  }
+  else
+    SetOutput(led, lampState);
+
+  server.send(200, "text/plane", ledState); //Send web page
+}
+
 void setup(void)
 {
   Serial.begin(115200);
@@ -85,6 +165,8 @@ void setup(void)
   server.on("/", handleRoot);
   server.on("/onewire", handleOneWire);
   server.on("/sensors", handleSensors);
+  server.on("/setLED", handleLED);
+  server.on("/readADC", handleADC);
 
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
@@ -106,7 +188,7 @@ void setup(void)
   digitalWrite(13, LOW);
   //digitalWrite(14, LOW);
 }
-bool fun=false;
+bool fun = false;
 void loop(void)
 {
   delay(1000);
@@ -121,9 +203,9 @@ void loop(void)
   CheckDallas();
   CheckDht();
   //sample();
-  if (fun)
+  /*if (fun)
     digitalWrite(16, HIGH);
   else
     digitalWrite(16, LOW);
-  fun=!fun;
+  fun = !fun;*/
 }
