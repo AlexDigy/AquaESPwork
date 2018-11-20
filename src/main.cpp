@@ -21,7 +21,7 @@ void handleRoot()
   //String mess = "hello from esp8266!\r\n";
   //mess += timeClient.getFormattedTime();
   String mess = MAIN_page; //Read HTML contents
-  server.send(200, "text/plain", mess);
+  server.send(200, "text/html", mess);
 }
 
 void handleNotFound()

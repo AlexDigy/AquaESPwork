@@ -84,12 +84,12 @@ function getData() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("BoardHumi").innerHTML = this.responseXML.getElementById("BoardHumi");
-      document.getElementById("BoardTemp").innerHTML = this.responseXML.getElementById("BoardTemp");
-      document.getElementById("AmbientTemp").innerHTML = this.responseXML.getElementById("AmbientTemp");
-      document.getElementById("EpraTemp").innerHTML = this.responseXML.getElementById("EpraTemp");
-      document.getElementById("WaterTemp").innerHTML = this.responseXML.getElementById("WaterTemp");
-      document.getElementById("BoardTime").innerHTML = this.responseXML.getElementById("BoardTime");
+      document.getElementById("BoardHumi").innerHTML = this.responseXML.getElementsByTagName('BoardHumi')[0].childNodes[0].nodeValue;
+      document.getElementById("BoardTemp").innerHTML = this.responseXML.getElementsByTagName('BoardTemp')[0].childNodes[0].nodeValue;
+      document.getElementById("AmbientTemp").innerHTML = this.responseXML.getElementsByTagName('AmbientTemp')[0].childNodes[0].nodeValue;
+      document.getElementById("EpraTemp").innerHTML = this.responseXML.getElementsByTagName('EpraTemp')[0].childNodes[0].nodeValue;
+      document.getElementById("WaterTemp").innerHTML = this.responseXML.getElementsByTagName('WaterTemp')[0].childNodes[0].nodeValue;
+      document.getElementById("BoardTime").innerHTML = this.responseXML.getElementsByTagName('BoardTime')[0].childNodes[0].nodeValue;
     }
   };
   xhttp.open("GET", "readADC", true);
