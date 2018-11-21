@@ -13,9 +13,9 @@ void SetupRelays()
     pinMode(in3, OUTPUT);
     //pinMode(in4, OUTPUT);
 
-    SetOutput(1, true);
-    SetOutput(2, true);
-    SetOutput(3, true);
+    SetOutput(1, false);
+    SetOutput(2, false);
+    SetOutput(3, false);
     //SetOutput(4, true);
 }
 
@@ -40,9 +40,9 @@ void SetOutput(byte number, bool value)
     if (num < 1 && num > 3)
         return;
     if (value)
-        digitalWrite(num, HIGH); // Включаем реле
+        digitalWrite(num, LOW); // Включаем реле
     else
-        digitalWrite(num, LOW); // Выключаем реле
+        digitalWrite(num, HIGH); // Выключаем реле
 }
 
 bool tekval = true;

@@ -21,7 +21,7 @@ void handleRoot()
   //String mess = "hello from esp8266!\r\n";
   //mess += timeClient.getFormattedTime();
   String mess = MAIN_page; //Read HTML contents
-  server.send(200, "text/html", mess);
+  server.send(200, F("text/html"), mess);
 }
 
 void handleNotFound()
@@ -62,37 +62,33 @@ void handleSensors()
   server.send(200, "text/plain", mess);
 }
 
+static const char xml1[] = "<?xml version = \"1.0\" ?><sensors><BoardHumi>";
+static const char xml2[] = "</BoardHumi><BoardTemp>";
+static const char xml3[] = "</BoardTemp><AmbientTemp>";
+static const char xml4[] = "</AmbientTemp><EpraTemp>";
+static const char xml5[] = "</EpraTemp><WaterTemp>";
+static const char xml6[] = "</WaterTemp><BoardTime>";
+static const char xml7[] = "</BoardTime></sensors>";
+static const char xml8[] = "text/xml";
+String adcValue = "";
+
 void handleADC()
 {
-  String adcValue = "<?xml version = \"1.0\" ?>";
-  adcValue += "<sensors>";
-
-  adcValue += "<BoardHumi>";
+  adcValue = xml1;
   adcValue += String(dhtHumidity, 0);
-  adcValue += "</BoardHumi>";
-
-  adcValue += "<BoardTemp>";
+  adcValue += xml2;
   adcValue += String(dhtTemp, 1);
-  adcValue += "</BoardTemp>";
-
-  adcValue += "<AmbientTemp>";
+  adcValue += xml3;
   adcValue += String(dsAmbientTemp, 1);
-  adcValue += "</AmbientTemp>";
-
-  adcValue += "<EpraTemp>";
+  adcValue += xml4;
   adcValue += String(dsEpraTemp, 1);
-  adcValue += "</EpraTemp>";
-
-  adcValue += "<WaterTemp>";
+  adcValue += xml5;
   adcValue += String(dsWaterTemp, 1);
-  adcValue += "</WaterTemp>";
-
-  adcValue += "<BoardTime>";
+  adcValue += xml6;
   adcValue += timeClient.getFormattedTime();
-  adcValue += "</BoardTime>";
+  adcValue += xml7;
 
-  adcValue += "</sensors>";
-  server.send(200, "text/xml", adcValue); //Send ADC value only to client ajax request
+  server.send(200, xml8, adcValue); //Send ADC value only to client ajax request
 }
 
 void handleLED()
@@ -107,13 +103,13 @@ void handleLED()
     t_lamp = "";
   }
   byte led = 0;
-  if (t_lamp = "1")
+  if (t_lamp == "1")
     led = 1;
-  if (t_lamp = "2")
+  if (t_lamp == "2")
     led = 2;
-  if (t_lamp = "3")
+  if (t_lamp == "3")
     led = 3;
-  if (t_lamp = "5")
+  if (t_lamp == "5")
     led = 5;
   bool lampState = false;
   if (t_state == "1")
@@ -135,7 +131,7 @@ void handleLED()
       digitalWrite(16, LOW);
   }
   else
-    SetOutput(led, lampState);
+    SetOutput(led, !lampState);
 
   server.send(200, "text/plane", ledState); //Send web page
 }
@@ -183,15 +179,18 @@ void setup(void)
   DhtBegin();
 
   pinMode(16, OUTPUT); // вентилятор
-  digitalWrite(16, LOW);
-  digitalWrite(12, LOW);
-  digitalWrite(13, LOW);
+  //digitalWrite(16, LOW);
+  //digitalWrite(12, LOW);
+  //digitalWrite(13, LOW);
   //digitalWrite(14, LOW);
+
+  //adcValue = xml1 + String("00") + xml2 + String("00") + xml3 + String("00") + xml4 + String("00") + xml5 + String("00") + xml6 + String("00") + xml7;
 }
 bool fun = false;
+unsigned long lastUpdate     = 0;
 void loop(void)
 {
-  delay(1000);
+  delay(10);
 
   if (WiFi.status() != WL_CONNECTED)
     return;
@@ -200,8 +199,12 @@ void loop(void)
 
   timeClient.update();
 
+if (millis()-lastUpdate>1000)
+{
+  lastUpdate = millis();
   CheckDallas();
   CheckDht();
+}
   //sample();
   /*if (fun)
     digitalWrite(16, HIGH);

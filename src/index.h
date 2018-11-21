@@ -1,5 +1,5 @@
 #include <Arduino.h>
-const char MAIN_page[] PROGMEM = R"=====(
+static const char MAIN_page[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html>
 <body>
