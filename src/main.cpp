@@ -124,14 +124,9 @@ void handleLED()
   }
 
   if (led == 5)
-  {
-    if (lampState)
-      digitalWrite(16, HIGH);
-    else
-      digitalWrite(16, LOW);
-  }
+    SetFun(lampState ? 255 : 0);
   else
-    SetOutput(led, !lampState);
+    SetLampState(led, lampState);
 
   server.send(200, "text/plane", ledState); //Send web page
 }
@@ -164,10 +159,6 @@ void setup(void)
   server.on("/setLED", handleLED);
   server.on("/readADC", handleADC);
 
-  server.on("/inline", []() {
-    server.send(200, "text/plain", "this works as well");
-  });
-
   server.onNotFound(handleNotFound);
 
   server.begin();
@@ -178,16 +169,13 @@ void setup(void)
   DallasBegin();
   DhtBegin();
 
-  pinMode(16, OUTPUT); // вентилятор
   //digitalWrite(16, LOW);
   //digitalWrite(12, LOW);
   //digitalWrite(13, LOW);
   //digitalWrite(14, LOW);
-
-  //adcValue = xml1 + String("00") + xml2 + String("00") + xml3 + String("00") + xml4 + String("00") + xml5 + String("00") + xml6 + String("00") + xml7;
 }
 bool fun = false;
-unsigned long lastUpdate     = 0;
+unsigned long lastUpdate = 0;
 void loop(void)
 {
   delay(10);
@@ -199,12 +187,12 @@ void loop(void)
 
   timeClient.update();
 
-if (millis()-lastUpdate>1000)
-{
-  lastUpdate = millis();
-  CheckDallas();
-  CheckDht();
-}
+  if (millis() - lastUpdate > 1000)
+  {
+    lastUpdate = millis();
+    CheckDallas();
+    CheckDht();
+  }
   //sample();
   /*if (fun)
     digitalWrite(16, HIGH);

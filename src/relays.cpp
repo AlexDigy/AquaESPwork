@@ -5,6 +5,7 @@ int in1 = 13; // Указываем, что вывод реле In1, подкл�
 int in2 = 12; // Указываем, что вывод реле In2, подключен к реле цифровому выводу
 int in3 = 14;
 //int in4 = 2; // был 16. Второй нельзя использовать, т.к. дергается постоянно логгером
+int fun = 16; // вентилятор
 
 void SetupRelays()
 {
@@ -12,14 +13,16 @@ void SetupRelays()
     pinMode(in2, OUTPUT);
     pinMode(in3, OUTPUT);
     //pinMode(in4, OUTPUT);
+    pinMode(fun, OUTPUT);
 
-    SetOutput(1, false);
-    SetOutput(2, false);
-    SetOutput(3, false);
-    //SetOutput(4, true);
+    SetLampState(1, false);
+    SetLampState(2, false);
+    SetLampState(3, false);
+    //SetLampState    (4, true);
+    SetLampState(5, false);
 }
 
-void SetOutput(byte number, bool value)
+void SetLampState(byte number, bool value)
 {
     int num = 0;
     switch (number)
@@ -37,24 +40,23 @@ void SetOutput(byte number, bool value)
         num = in4;
         break;*/
     }
-    if (num < 1 && num > 3)
+    if (num < 1 || num > 3)
         return;
+
     if (value)
         digitalWrite(num, LOW); // Включаем реле
     else
         digitalWrite(num, HIGH); // Выключаем реле
 }
 
-bool tekval = true;
-byte iter = 1;
-
-void sample()
+// value 0 to 100 %
+void SetFun(byte value)
 {
-    SetOutput(iter++, tekval);
+    /*if (value == 0)
+        digitalWrite(fun, LOW);
+    else
+        digitalWrite(fun, HIGH);*/
+    int val = 1023 * value / 100;
 
-    if (iter > 3)
-    {
-        iter = 1;
-        tekval = !tekval;
-    }
+    digitalWrite(fun, val);
 }
