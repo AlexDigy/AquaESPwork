@@ -57,7 +57,9 @@ void SetFun(byte value)
         digitalWrite(fun, LOW);
     else
         digitalWrite(fun, HIGH);*/
-    int val = 1023 * value / 100;
+
+    // вентилятор стартует с 20%
+    int val = 200 + (1023 - 200) * value / 100;
 
     analogWrite(fun, val);
 }
