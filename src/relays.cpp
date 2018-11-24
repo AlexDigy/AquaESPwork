@@ -20,6 +20,7 @@ void SetupRelays()
     SetLampState(3, false);
     //SetLampState    (4, true);
     SetLampState(5, false);
+    SetFun(0);
 }
 
 void SetLampState(byte number, bool value)
@@ -40,7 +41,7 @@ void SetLampState(byte number, bool value)
         num = in4;
         break;*/
     }
-    if (num < 1 || num > 3)
+    if (num < 1 && num > 3)
         return;
 
     if (value)
@@ -58,5 +59,5 @@ void SetFun(byte value)
         digitalWrite(fun, HIGH);*/
     int val = 1023 * value / 100;
 
-    digitalWrite(fun, val);
+    analogWrite(fun, val);
 }

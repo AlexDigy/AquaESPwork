@@ -1,4 +1,4 @@
 #include <Arduino.h>
 void SetupRelays();
-void SetOutput(byte number, bool value);
-void sample();
+void SetLampState(byte number, bool value);
+void SetFun(byte value);

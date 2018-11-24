@@ -31,6 +31,7 @@ Current Time : <span id="BoardTime">NA</span>
 <br>
 <div>
   Fun : 
+  <input id="servo" type="range" min="0" max="100" onchange="sendFun(this.value)" value="0">
 	<button type="button" onclick="sendData(5,1)">ON</button>
 	<button type="button" onclick="sendData(5,0)">OFF</button>
 </div>
@@ -72,6 +73,17 @@ function sendData(lamp,led) {
     }
   };
   xhttp.open("GET", "setLED?LED="+lamp+"&LEDstate="+led, true);
+  xhttp.send();
+}
+
+function sendFun(value) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("FunState").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "setFUN?FUNstate="+value, true);
   xhttp.send();
 }
 

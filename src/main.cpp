@@ -131,6 +131,21 @@ void handleLED()
   server.send(200, "text/plane", ledState); //Send web page
 }
 
+void handleFUN()
+{
+  String FUNState = "NA";                  //Feedback parameter
+  String t_state = server.arg("FUNstate"); //Refer  xhttp.open("GET", "setLED?LED="+lamp+"&LEDstate="+led, true);
+  Serial.println(t_state);
+  if (t_state == NULL)
+    t_state = "";
+
+  byte val = t_state.toInt();
+
+  SetFun(val);
+int v = 1023 * val / 100;
+  server.send(200, "text/plane", t_state+ "-"+val+"-"+v); //Send web page
+}
+
 void setup(void)
 {
   Serial.begin(115200);
@@ -157,6 +172,7 @@ void setup(void)
   server.on("/onewire", handleOneWire);
   server.on("/sensors", handleSensors);
   server.on("/setLED", handleLED);
+  server.on("/setFUN", handleFUN);
   server.on("/readADC", handleADC);
 
   server.onNotFound(handleNotFound);
@@ -174,7 +190,7 @@ void setup(void)
   //digitalWrite(13, LOW);
   //digitalWrite(14, LOW);
 }
-bool fun = false;
+
 unsigned long lastUpdate = 0;
 void loop(void)
 {
@@ -193,10 +209,4 @@ void loop(void)
     CheckDallas();
     CheckDht();
   }
-  //sample();
-  /*if (fun)
-    digitalWrite(16, HIGH);
-  else
-    digitalWrite(16, LOW);
-  fun = !fun;*/
 }
