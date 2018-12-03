@@ -6,6 +6,7 @@
 #include "mydht.h"
 #include "myds18b20.h"
 #include "relays.h"
+#include "AquaTime.h"
 
 #include "index.h" //Our HTML webpage contents with javascripts
 
@@ -15,6 +16,8 @@ const char *password = "Dnpm7Ssgk8";
 ESP8266WebServer server(80);
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "ru.pool.ntp.org", 5 * 3600, 6 * 60 * 60 * 1000);
+
+AquaTime aquaTime;
 
 void handleRoot()
 {
@@ -142,8 +145,8 @@ void handleFUN()
   byte val = t_state.toInt();
 
   SetFun(val);
-int v = 1023 * val / 100;
-  server.send(200, "text/plane", t_state+ "-"+val+"-"+v); //Send web page
+  int v = 1023 * val / 100;
+  server.send(200, "text/plane", t_state + "-" + val + "-" + v); //Send web page
 }
 
 void setup(void)
@@ -180,6 +183,8 @@ void setup(void)
   server.begin();
   Serial.println("HTTP server started");
 
+  aquaTime.SetTimes("");
+
   timeClient.begin();
 
   DallasBegin();
@@ -208,5 +213,6 @@ void loop(void)
     lastUpdate = millis();
     CheckDallas();
     CheckDht();
+
   }
 }
