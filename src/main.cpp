@@ -189,11 +189,6 @@ void setup(void)
 
   DallasBegin();
   DhtBegin();
-
-  //digitalWrite(16, LOW);
-  //digitalWrite(12, LOW);
-  //digitalWrite(13, LOW);
-  //digitalWrite(14, LOW);
 }
 
 unsigned long lastUpdate = 0;
@@ -214,5 +209,9 @@ void loop(void)
     CheckDallas();
     CheckDht();
 
+    unsigned long epochTime = timeClient.getEpochTime();
+    SetLampState(1, aquaTime.lamp1.CheckLamp(epochTime));
+    SetLampState(2, aquaTime.lamp2.CheckLamp(epochTime));
+    SetLampState(3, aquaTime.lamp3.CheckLamp(epochTime));
   }
 }

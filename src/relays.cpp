@@ -19,7 +19,7 @@ void SetupRelays()
     SetLampState(2, false);
     SetLampState(3, false);
     //SetLampState    (4, true);
-    SetLampState(5, false);
+    //SetLampState(5, false);
     SetFun(0);
 }
 
