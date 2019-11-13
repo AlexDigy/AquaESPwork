@@ -1,14 +1,4 @@
-#include <Arduino.h>
-
-class AquaTime
-{
-  public:
-    AquaT lamp1;
-    AquaT lamp2;
-    AquaT lamp3;
-
-    void SetTimes(String str);
-};
+#include "Arduino.h"
 
 class AquaT
 {
@@ -20,4 +10,14 @@ class AquaT
 
     void Parse(String str);
     bool CheckLamp(unsigned long epochTime);
+};
+
+class AquaTime
+{
+  public:
+    AquaT lamp1;
+    AquaT lamp2;
+    AquaT lamp3;
+
+    void SetTimes(String str);
 };
