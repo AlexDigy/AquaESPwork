@@ -11,7 +11,7 @@
 #include "index.h" //Our HTML webpage contents with javascripts
 
 const char *ssid = "digynet";
-const char *password = "Dnpm7Ssgk8";
+const char *password = "VGzfyKez8n";
 
 ESP8266WebServer server(80);
 WiFiUDP ntpUDP;
@@ -112,8 +112,8 @@ void handleLED()
     led = 2;
   if (t_lamp == "3")
     led = 3;
-  if (t_lamp == "5")
-    led = 5;
+  /*if (t_lamp == "5")
+    led = 5;*/
   bool lampState = false;
   if (t_state == "1")
   {
@@ -145,7 +145,7 @@ void handleFUN()
   byte val = t_state.toInt();
 
   SetFun(val);
-  int v = 1023 * val / 100;
+  int v = 200 + (1023 - 200) * val / 100;
   server.send(200, "text/plane", t_state + "-" + val + "-" + v); //Send web page
 }
 
@@ -165,6 +165,7 @@ void setup(void)
     delay(500);
     Serial.print(".");
   }
+  WiFi.hostname("AquaWork");
   Serial.println("");
   Serial.print("Connected to ");
   Serial.println(ssid);
@@ -210,8 +211,8 @@ void loop(void)
     CheckDht();
 
     unsigned long epochTime = timeClient.getEpochTime();
-    SetLampState(1, aquaTime.lamp1.CheckLamp(epochTime));
-    SetLampState(2, aquaTime.lamp2.CheckLamp(epochTime));
-    SetLampState(3, aquaTime.lamp3.CheckLamp(epochTime));
+    //SetLampState(1, aquaTime.lamp1.CheckLamp(epochTime));
+    //SetLampState(2, aquaTime.lamp2.CheckLamp(epochTime));
+    //SetLampState(3, aquaTime.lamp3.CheckLamp(epochTime));
   }
 }

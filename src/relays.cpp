@@ -61,5 +61,8 @@ void SetFun(byte value)
     // вентилятор стартует с 20%
     int val = 200 + (1023 - 200) * value / 100;
 
+    if (value == 0)
+        val = 0;
+
     analogWrite(fun, val);
 }
